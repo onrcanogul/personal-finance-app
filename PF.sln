@@ -1,0 +1,36 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Solution Configuration
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PF.WebAPI", "Presentation\PF.WebAPI\PF.WebAPI.csproj", "{FD955330-6B05-4C5B-87DB-C02D7F275388}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PF.Application", "Application\PF.Application\PF.Application.csproj", "{A1B2C3D4-E5F6-789A-BCDE-123456789ABC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PF.Application.Abstraction", "Application\PF.Application.Abstraction\PF.Application.Abstraction.csproj", "{00000000-0000-0000-0000-000000000000}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PF.Domain", "Domain\PF.Domain\PF.Domain.csproj", "{00000000-0000-0000-0000-000000000000}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PF.Common", "Infrastructure\PF.Common\PF.Common.csproj", "{00000000-0000-0000-0000-000000000000}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PF.Infrastructure", "Infrastructure\PF.Infrastructure\PF.Infrastructure.csproj", "{00000000-0000-0000-0000-000000000000}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PF.Persistence", "Infrastructure\PF.Persistence\PF.Persistence.csproj", "{00000000-0000-0000-0000-000000000000}"
+EndProject
+Global
+				GlobalSection(SolutionConfigurationPlatforms) = preSolution
+								Debug|Any CPU = Debug|Any CPU
+								Release|Any CPU = Release|Any CPU
+				EndGlobalSection
+				GlobalSection(ProjectConfigurationPlatforms) = postSolution
+								{FD955330-6B05-4C5B-87DB-C02D7F275388}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+								{FD955330-6B05-4C5B-87DB-C02D7F275388}.Debug|Any CPU.Build.0 = Debug|Any CPU
+								{FD955330-6B05-4C5B-87DB-C02D7F275388}.Release|Any CPU.ActiveCfg = Release|Any CPU
+								{FD955330-6B05-4C5B-87DB-C02D7F275388}.Release|Any CPU.Build.0 = Release|Any CPU
+								{A1B2C3D4-E5F6-789A-BCDE-123456789ABC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+								{A1B2C3D4-E5F6-789A-BCDE-123456789ABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+								{A1B2C3D4-E5F6-789A-BCDE-123456789ABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+								{A1B2C3D4-E5F6-789A-BCDE-123456789ABC}.Release|Any CPU.Build.0 = Release|Any CPU
+					{00000000-0000-0000-0000-000000000000}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+					{00000000-0000-0000-0000-000000000000}.Debug|Any CPU.Build.0 = Debug|Any CPU
+				EndGlobalSection
+				GlobalSection(NestedProjects) = preSolution
+				EndGlobalSection
+EndGlobal

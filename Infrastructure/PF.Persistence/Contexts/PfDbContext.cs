@@ -7,9 +7,16 @@ using PF.Domain.Entities.Identity;
 
 namespace PF.Persistence.Contexts;
 
-public class PFDbContext(DbContextOptions<PFDbContext> options, IHttpContextAccessor httpContextAccessor) : IdentityDbContext<User,Role,Guid>(options)
+public class PfDbContext(DbContextOptions<PfDbContext> options)
+    : IdentityDbContext<User, Role, string>(options)
 {
-    public DbSet<Product> Products { get; set; }
+    public DbSet<Activity> Activities { get; set; }
+    public DbSet<Budget> Budgets { get; set; }
+    public DbSet<Expense> Expenses { get; set; }
+    public DbSet<ExpenseActivity> ExpenseActivities { get; set; }
+    public DbSet<Income> Incomes { get; set; }
+    public DbSet<IncomeActivity> IncomeActivities { get; set; }
+    public DbSet<Report> Reports { get; set; }
     
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {
@@ -33,16 +40,12 @@ public class PFDbContext(DbContextOptions<PFDbContext> options, IHttpContextAcce
             {
                 case EntityState.Modified:
                     baseEntity.UpdatedDate = DateTime.UtcNow;
-                    baseEntity.UpdatedBy = GetCurrentUsername();
                     break;
                 case EntityState.Added:
                     baseEntity.CreatedDate = DateTime.UtcNow;
                     baseEntity.UpdatedDate = DateTime.UtcNow;
-                    baseEntity.CreatedBy = GetCurrentUsername();
                     break;
             }
         }
     }
-    private string? GetCurrentUsername()
-        => httpContextAccessor.HttpContext?.User.Identity!.Name;
 }

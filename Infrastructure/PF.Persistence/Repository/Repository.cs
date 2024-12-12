@@ -9,7 +9,7 @@ using PF.Persistence.Contexts;
 
 namespace PF.Persistence.Repository;
 
-public class Repository<T>(PFDbContext context)
+public class Repository<T>(PfDbContext context)
     : IRepository<T> where T : BaseEntity
 {
     private DbSet<T> Table => context.Set<T>();

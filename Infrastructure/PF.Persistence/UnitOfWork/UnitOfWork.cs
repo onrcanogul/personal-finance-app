@@ -4,7 +4,7 @@ using PF.Persistence.Contexts;
 
 namespace PF.Persistence.UnitOfWork;
 
-public class UnitOfWork(PFDbContext context) : IUnitOfWork
+public class UnitOfWork(PfDbContext context) : IUnitOfWork
 {
     public void Commit()
     {

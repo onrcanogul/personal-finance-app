@@ -35,9 +35,14 @@ public class UserService(UserManager<User> service, ITokenHandler tokenHandler, 
         await UpdateRefreshTokenAsync(refreshToken, user, token.Expiration, 10);
         return Response<Token>.Success(token, StatusCodes.Status200OK);
     }
+
     public async Task<Response<NoContent>> Register(UserDto user)
-        => (await service.CreateAsync(mapper.Map<User>(user))).Succeeded ? Response<NoContent>.Success(StatusCodes.Status201Created)
+    {
+        user.Id = Guid.NewGuid();
+        var response = (await service.CreateAsync(mapper.Map<User>(user))).Succeeded ? Response<NoContent>.Success(StatusCodes.Status201Created)
             : Response<NoContent>.Failure(localizer["RegisterFailure"].Value, StatusCodes.Status400BadRequest);
+        return response;
+    }
     private async Task UpdateRefreshTokenAsync(string refreshToken, User user, DateTime accessTokenDate, int addToAccessToken)
     {
         if(user == null) throw new NotFoundException(localizer["UserNotFound"].Value);

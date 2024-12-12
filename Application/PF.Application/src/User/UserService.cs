@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using PF.Application.Abstraction.Report;
 using PF.Application.Abstraction.src;
 using PF.Application.Abstraction.src.User.Dto;
 using PF.Common.Exceptions;
@@ -13,7 +14,7 @@ using PF.Infrastructure;
 
 namespace PF.Application.src;
 
-public class UserService(UserManager<User> service, ITokenHandler tokenHandler, IMapper mapper, IHttpContextAccessor httpContextAccessor, IStringLocalizer localizer)
+public class UserService(UserManager<User> service, ITokenHandler tokenHandler, IMapper mapper, IHttpContextAccessor httpContextAccessor, IStringLocalizer localizer, IReportService reportService)
     : IUserService
 {
     public string? GetCurrentUsername() => httpContextAccessor.HttpContext?.User.Identity!.Name;
@@ -41,6 +42,8 @@ public class UserService(UserManager<User> service, ITokenHandler tokenHandler, 
         user.Id = Guid.NewGuid();
         var response = (await service.CreateAsync(mapper.Map<User>(user))).Succeeded ? Response<NoContent>.Success(StatusCodes.Status201Created)
             : Response<NoContent>.Failure(localizer["RegisterFailure"].Value, StatusCodes.Status400BadRequest);
+        if (response.IsSuccessful)
+            await reportService.CreateAsync(new() { UserId = user.Id.ToString(), User = user });
         return response;
     }
     private async Task UpdateRefreshTokenAsync(string refreshToken, User user, DateTime accessTokenDate, int addToAccessToken)

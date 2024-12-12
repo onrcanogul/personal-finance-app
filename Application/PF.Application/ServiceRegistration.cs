@@ -3,10 +3,12 @@ using Microsoft.Extensions.DependencyInjection;
 using PF.Application.Abstraction.Activity;
 using PF.Application.Abstraction.Expense;
 using PF.Application.Abstraction.Income;
+using PF.Application.Abstraction.Report;
 using PF.Application.Abstraction.src;
 using PF.Application.Activity;
 using PF.Application.Expense;
 using PF.Application.Income;
+using PF.Application.Report;
 using PF.Application.src;
 using PF.Application.src.Abstraction.Base;
 using PF.Application.src.Base;
@@ -23,6 +25,7 @@ public static class ServiceRegistration
         services.AddScoped<IExpenseService, ExpenseService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IIncomeService, IncomeService>();
+        services.AddScoped<IReportService, ReportService>();
         services.AddScoped<IActivityService, ActivityService>();
         return services;
     }

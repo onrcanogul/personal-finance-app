@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PF.Application.Abstraction.Activity;
 using PF.Application.Abstraction.Activity.Dto;
+using PF.Common.Models.Enums;
 using PF.WebAPI.Controllers.Base;
 
 namespace PF.WebAPI.Controllers.Activity;
@@ -14,6 +15,10 @@ public class ActivityController(IActivityService service) : BaseController
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> Get(Guid id)
         => ApiResult(await service.GetFirstOrDefaultAsync(x => x.Id == id));
+
+    [HttpGet("{activityType:int}")]
+    public async Task<IActionResult> GetByActivityType([FromRoute]int activityType)
+        => ApiResult(await service.GetFilteredActivities((ActivityType)activityType));
     
     [HttpPost]
     public async Task<IActionResult> Create(ActivityDto activity)

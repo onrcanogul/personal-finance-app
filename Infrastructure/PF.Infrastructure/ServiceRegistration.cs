@@ -29,7 +29,7 @@ public static class ServiceRegistration
                 NameClaimType = ClaimTypes.Name,      
             };
         });
-        services.AddExceptionHandler<PF.Infrastructure.Middlewares.ExceptionHandler>();
+        services.AddExceptionHandler<Middlewares.ExceptionHandler>();
         return services;
     }
     

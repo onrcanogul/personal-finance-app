@@ -1,3 +1,4 @@
+using System.Net;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -20,10 +21,12 @@ public class UserService(UserManager<User> service, ITokenHandler tokenHandler, 
     public string? GetCurrentUsername() => httpContextAccessor.HttpContext?.User.Identity!.Name;
     public async Task<Response<Token>> Login(LoginDto dto)
     {
-        var user = await service.FindByNameAsync(dto.UsernameOrEmail) ?? await service.FindByEmailAsync(dto.UsernameOrEmail)
-                   ?? throw new NotFoundException(localizer["UserNotFound"].Value);
+        var user = await service.FindByNameAsync(dto.UsernameOrEmail) ?? await service.FindByEmailAsync(dto.UsernameOrEmail);
+        if (user == null)
+            throw new BadRequestException("Invalid username or password");
         var result = await service.CheckPasswordAsync(user, dto.Password);
-        if (!result) throw new Exception();
+        if (!result)
+            return Response<Token>.Failure(localizer["UserNotFound"].Value, StatusCodes.Status400BadRequest);
         var token = tokenHandler.CreateToken(user);
         await UpdateRefreshTokenAsync(token.RefreshToken!, user, token.Expiration, 30);
         return Response<Token>.Success(token, StatusCodes.Status200OK);
@@ -37,13 +40,26 @@ public class UserService(UserManager<User> service, ITokenHandler tokenHandler, 
         return Response<Token>.Success(token, StatusCodes.Status200OK);
     }
 
-    public async Task<Response<NoContent>> Register(UserDto user)
+    public async Task<Response<NoContent>> Register(RegisterDto user)
     {
-        user.Id = Guid.NewGuid();
-        var response = (await service.CreateAsync(mapper.Map<User>(user))).Succeeded ? Response<NoContent>.Success(StatusCodes.Status201Created)
+        
+        var isExist = await service.FindByNameAsync(user.Username);
+        if(isExist != null) throw new BadRequestException("User already exists.");
+        var newUser = new User { UserName = user.Username, Email = user.Email };
+        await service.CreateAsync(newUser, user.Password);
+        var response = (await service.CreateAsync(mapper.Map<User>(user), user.Password)).Succeeded ? 
+            Response<NoContent>.Success(StatusCodes.Status201Created)
             : Response<NoContent>.Failure(localizer["RegisterFailure"].Value, StatusCodes.Status400BadRequest);
         if (response.IsSuccessful)
-            await reportService.CreateAsync(new() { UserId = user.Id.ToString(), User = user });
+        {
+            var registeredUser = await service.FindByNameAsync(user.Username);
+            await reportService.CreateAsync(new() 
+                { 
+                    UserId = registeredUser.Id, 
+                    User = mapper.Map<UserDto>(registeredUser)
+                });
+        }
+            
         return response;
     }
     private async Task UpdateRefreshTokenAsync(string refreshToken, User user, DateTime accessTokenDate, int addToAccessToken)

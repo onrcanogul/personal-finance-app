@@ -9,7 +9,6 @@ public class ExceptionHandler : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
-
         httpContext.Response.StatusCode = exception switch
         {
             NotFoundException => 404,

@@ -16,6 +16,6 @@ public class UserController(IUserService service) : BaseController
         => ApiResult(await service.LoginWithRefreshToken(refreshToken));
     
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] UserDto user)
+    public async Task<IActionResult> Register([FromBody] RegisterDto user)
         => ApiResult(await service.Register(user));
 }

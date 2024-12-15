@@ -7,6 +7,6 @@ public class BudgetMapping : Profile
 {
     public BudgetMapping()
     {
-        CreateMap<Domain.Entities.Budget, BudgetDto>();
+        CreateMap<Domain.Entities.Budget, BudgetDto>().ReverseMap();
     }
 }

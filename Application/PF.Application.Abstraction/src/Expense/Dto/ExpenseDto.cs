@@ -9,7 +9,7 @@ public class ExpenseDto : BaseDto
     public string UserId { get; set; }
     public Guid ActivityId { get; set; }
     public decimal Price { get; set; }
-    public bool IsPaid { get; set; }
+    public bool IsPaid { get; set; } = default;
 
     public ActivityDto? Activity { get; set; }
     public UserDto? User { get; set; }

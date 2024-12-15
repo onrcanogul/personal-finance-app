@@ -13,10 +13,11 @@ using PF.Common.Models.Token;
 using PF.Domain.Entities.Identity;
 using PF.Infrastructure;
 using PF.Persistence.Contexts;
+using PF.Persistence.UnitOfWork;
 
 namespace PF.Application.src;
 
-public class UserService(UserManager<User> service, ITokenHandler tokenHandler, IMapper mapper, IHttpContextAccessor httpContextAccessor, IStringLocalizer localizer, IReportService reportService, IBudgetService budgetService, PfDbContext context)
+public class UserService(UserManager<User> service, ITokenHandler tokenHandler, IMapper mapper, IHttpContextAccessor httpContextAccessor, IStringLocalizer localizer, IReportService reportService, IBudgetService budgetService, IUnitOfWork unitOfWork)
     : IUserService
 {
     public string? GetCurrentUsername() => httpContextAccessor.HttpContext?.User.Identity!.Name;
@@ -40,29 +41,27 @@ public class UserService(UserManager<User> service, ITokenHandler tokenHandler, 
         await UpdateRefreshTokenAsync(refreshToken, user, token.Expiration, 10);
         return Response<Token>.Success(token, StatusCodes.Status200OK);
     }
-
     public async Task<Response<NoContent>> Register(RegisterDto user)
     {
-        
         var isExist = await service.FindByNameAsync(user.Username);
         if(isExist != null) throw new BadRequestException("User already exists.");
         var userId = Guid.NewGuid();
         var newUser = new User { UserName = user.Username, Email = user.Email, Id = userId.ToString()};
         var isSuccessful = await service.CreateAsync(newUser, user.Password);
         if (!isSuccessful.Succeeded) throw new BadRequestException("Registration failed.");
-        await reportService.CreateAsync(new()
+        await reportService.CreateWithoutCommitAsync(new()
         {
             UserId = userId.ToString(),
             CreatedBy = "admin",
             CreatedDate = DateTime.Now
         });
-        await budgetService.CreateAsync(new()
+        await budgetService.CreateWithoutCommitAsync(new()
         {
             UserId = userId.ToString(),
             CreatedBy = "admin",
             CreatedDate = DateTime.Now
         });
-            
+        await unitOfWork.CommitAsync();
         return Response<NoContent>.Success(StatusCodes.Status201Created);
     }
     private async Task UpdateRefreshTokenAsync(string refreshToken, User user, DateTime accessTokenDate, int addToAccessToken)

@@ -40,10 +40,12 @@ public class PfDbContext(DbContextOptions<PfDbContext> options)
             {
                 case EntityState.Modified:
                     baseEntity.UpdatedDate = DateTime.UtcNow;
+                    baseEntity.CreatedBy = "admin";
                     break;
                 case EntityState.Added:
                     baseEntity.CreatedDate = DateTime.UtcNow;
                     baseEntity.UpdatedDate = DateTime.UtcNow;
+                    baseEntity.UpdatedBy = "admin";
                     break;
             }
         }

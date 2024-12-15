@@ -46,6 +46,12 @@ public class CrudService<T, TDto>(IRepository<T> repository, IMapper mapper, IUn
         await unitOfWork.CommitAsync();
         return Response<TDto>.Success(dto, StatusCodes.Status201Created);
     }
+    public async Task<Response<TDto>> CreateWithoutCommitAsync(TDto dto)
+    {
+        dto.Id = Guid.NewGuid();
+        await repository.CreateAsync(mapper.Map<T>(dto));
+        return Response<TDto>.Success(dto, StatusCodes.Status201Created);
+    }
     public async Task<Response<TDto>> UpdateAsync(TDto dto)
     {
         var entity = await repository.GetFirstOrDefaultAsync(x => x.Id == dto.Id);
